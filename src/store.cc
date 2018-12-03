@@ -102,7 +102,7 @@ class StoreImpl {
 			return false;
 	}
 
-	void releaseProduct(std::string vendor, std::string product_name, int count){
+	bool releaseProduct(std::string vendor, std::string product_name, int count){
 			TransactionQuery request;
 			request.set_product_name(product_name);
 			request.set_count(count);
@@ -125,7 +125,9 @@ class StoreImpl {
 			if(got_tag == this) {
 					if(!status.ok()) {
 							std::cout << "Unable to release products\n";
-					}
+					} else {
+            return reply.success();
+          }
 			}
 
 	}
@@ -152,8 +154,10 @@ class StoreImpl {
 			GPR_ASSERT(ok);
 			if(got_tag == this) {
 					if(!status.ok()) {
-							return reply.success();
-					}
+							std::cout << "Unable to sell";
+					} else {
+            return reply.success();
+          }
 			}
 
 	}
@@ -194,10 +198,10 @@ class StoreImpl {
 				for (int i = 0; i < num_queries; i++) {
 						ProductQueryItem query = request.query_items(i);
 						if (store->reserveProduct(query.vendor_id(), query.product_name(), query.count())) {
-							std::cout << "Reserved " << query.product_name() << "\n" ;
+							std::cout << "Reserved " << query.product_name()  << " " << query.count() << "\n" ;
 							reserved[query.vendor_id()] = std::make_pair(query.product_name(), query.count());
 						} else {
-							std::cout << "Not Reserved " << query.product_name() << "\n" ;
+							std::cout << "Not Reserved " << query.product_name() << " " << query.count() << "\n" ;
 							allReserved = false;
 							break;
 						}
