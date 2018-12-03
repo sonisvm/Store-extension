@@ -62,10 +62,6 @@ Now the store will do the following steps :
    2. Say reserve of q1 succeeded and q2 failed, then you would call `release` on q1. This would make `product1-10` on vendor1 go back to available pool.
    3. Then you should reply back to the client saying the transaction failed.
 
-### Implementation
-
-The store is implemented as a multithreaded asynchronous server, in the sense that communications between client and server are asynchronous. The communications between vendors and server are synchronous. On receiving a list of queries from a client, the server contacts each vendor, in order, to reserve the product. If the server is not able to reserve any product fully, it will release all products reserved till then and returns a status of `false` to the client. If server was able to reserve all products, it will then try to sell (or rather buy on behalf of the client) all the products. If any error happens during sell or release operations, a status of `false` is returned to the client. However, the set of operations are not stopped, meaning that if there were 5 products to sell and if the 3rd sell call failed, we would still continue with the rest of the sell calls.
-
 ## Run
 1. run store
 2. run run_tests, passing store's ip.
@@ -76,11 +72,3 @@ The store is implemented as a multithreaded asynchronous server, in the sense th
 3. You're not allowed to modify the vendor implementation.
 4. A sample client has been given to you.
 5. For grading, your store will be tested against more clients and vendors than given in example. You are encouraged to write additional clients and new config files for vendors and test your store can correctly handle various scenarios.
-
-
-## Tests
-
--	Two clients - All quantities are within limits
--	Two clients - One client tries to buy excess and the other's quantity is within limits
--	Three clients - Total quantity brought by the clients exceeds the available.
--	Three clients - One client buys off everything in vendor 1
